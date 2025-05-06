@@ -13,6 +13,8 @@ const Header = () => {
         { href: "/listings", text: "Listings" },
         { href: "/location", text: "Location" },
         { href: "/features", text: "Features" },
+        { href: "/features", text: "Features" },
+        { href: "/features", text: "Features" },
 
     ];
 

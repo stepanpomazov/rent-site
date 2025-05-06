@@ -143,7 +143,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                             alt={`${title} image ${currentImageIndex + 1}`}
                             width={300}
                             height={250}
-                            className="w-full h-[250px] object-cover rounded-t-lg"
+                            className="w-full h-[250px] object-cover rounded-3xl"
                             priority
                         />
 
@@ -159,44 +159,24 @@ const ListingCard: React.FC<ListingCardProps> = ({
                         )}
 
                         {!isMobile && imageUrls.length > 1 && (
-                            <>
+                            <div className={`absolute inset-0 flex items-center justify-between px-3 opacity-0 hover:opacity-100 transition-opacity duration-200 ${isHovered ? 'opacity-100' : ''}`}>
                                 <button
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/30 rounded-full p-2 shadow-md z-10 hover:bg-white/80 border border-gray-400"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        prevImage();
-                                    }}
+                                    className="bg-white/90 rounded-full p-2 shadow-md z-10 hover:bg-white border border-gray-200"
+                                    onClick={(e) => { e.stopPropagation(); prevImage(); }}
                                 >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="black"
-                                        strokeWidth="2"
-                                    >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2">
                                         <path d="M15 18l-6-6 6-6" />
                                     </svg>
                                 </button>
                                 <button
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/30 rounded-full p-2 shadow-md z-10 hover:bg-white/80 border border-gray-400"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        nextImage();
-                                    }}
+                                    className="bg-white/90 rounded-full p-2 shadow-md z-10 hover:bg-white border border-gray-200"
+                                    onClick={(e) => { e.stopPropagation(); nextImage(); }}
                                 >
-                                    <svg
-                                        width="16"
-                                        height="16"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="black"
-                                        strokeWidth="2"
-                                    >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2">
                                         <path d="M9 18l6-6-6-6" />
                                     </svg>
                                 </button>
-                            </>
+                            </div>
                         )}
 
                         <motion.button
