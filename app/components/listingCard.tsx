@@ -35,7 +35,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
     const [isHovered, setIsHovered] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
-    // Анимационные значения
     const rotateX = useSpring(0, springValues);
     const rotateY = useSpring(0, springValues);
     const scale = useSpring(1, springValues);
@@ -48,8 +47,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
         const offsetX = e.clientX - rect.left - rect.width / 2;
         const offsetY = e.clientY - rect.top - rect.height / 2;
 
-        rotateX.set((offsetY / (rect.height / 2)) * -15);
-        rotateY.set((offsetX / (rect.width / 2)) * 15);
+        rotateX.set((offsetY / (rect.height / 2)) * -5);
+        rotateY.set((offsetX / (rect.width / 2)) * 5);
         labelFloat.set(offsetY * 0.02);
     };
 
@@ -78,7 +77,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
     return (
         <div className="relative max-w-[300px]">
-            {/* Лейбл "Выбор гостей" с плавной анимацией */}
             {isGuestFavorite && (
                 <motion.div
                     className="absolute top-2 left-2 bg-white px-3 py-1 rounded-full shadow-lg z-30"
@@ -107,7 +105,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 </motion.div>
             )}
 
-            {/* Основная карточка с 3D-эффектами */}
             <motion.div
                 ref={ref}
                 className="bg-white rounded-lg shadow-md overflow-hidden w-full relative [perspective:1000px]"
@@ -117,7 +114,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 onMouseLeave={handleMouseLeave}
             >
                 <motion.div className="relative [transform-style:preserve-3d] w-full h-full">
-                    {/* Изображение */}
+
                     <div className="relative">
                         <Image
                             src={imageUrl}
@@ -128,7 +125,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
                             priority
                         />
 
-                        {/* Кнопка избранного */}
                         <motion.button
                             className="absolute top-2 right-2 p-2 bg-white/80 rounded-full z-10 backdrop-blur-sm"
                             onClick={(e) => {

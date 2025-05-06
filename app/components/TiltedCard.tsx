@@ -48,8 +48,8 @@ const ListingCard: React.FC<ListingCardProps> = ({
         const offsetX = e.clientX - rect.left - rect.width / 2;
         const offsetY = e.clientY - rect.top - rect.height / 2;
 
-        rotateX.set((offsetY / (rect.height / 2)) * -5);
-        rotateY.set((offsetX / (rect.width / 2)) * 5);
+        rotateX.set((offsetY / (rect.height / 2)) * -15);
+        rotateY.set((offsetX / (rect.width / 2)) * 15);
         x.set(e.clientX - rect.left);
         y.set(e.clientY - rect.top);
     };

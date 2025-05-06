@@ -1,14 +1,13 @@
-// components/Hero.js
+
 
 import Image from 'next/image';
 
 const Hero = () => {
     return (
         <section style={styles.hero}>
-            {/* Фоновая картинка */}
             <div style={styles.backgroundImage}>
                 <Image
-                    src="/hero.webp" // Убедитесь, что изображение находится в папке public
+                    src="/hero.webp"
                     alt="Hero Section"
                     layout="fill"
                     objectFit="cover"
@@ -22,7 +21,7 @@ const Hero = () => {
 const styles = {
     hero: {
         position: 'relative',
-        height: '80vh', // Высота секции Hero (можно изменить)
+        height: '80vh',
         width: '100%',
         overflow: 'hidden',
     },
