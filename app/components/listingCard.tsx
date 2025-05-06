@@ -1,0 +1,190 @@
+'use client';
+
+import React, { useRef, useState } from 'react';
+import Image from 'next/image';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+
+interface ListingCardProps {
+    title: string;
+    location: string;
+    distance: string;
+    dates: string;
+    price: string;
+    imageUrl: string;
+    rating: number;
+    isGuestFavorite?: boolean;
+}
+
+const springValues = {
+    damping: 25,
+    stiffness: 100,
+    mass: 1.5,
+};
+
+const ListingCard: React.FC<ListingCardProps> = ({
+                                                     title,
+                                                     location,
+                                                     distance,
+                                                     dates,
+                                                     price,
+                                                     imageUrl,
+                                                     rating,
+                                                     isGuestFavorite = true,
+                                                 }) => {
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const ref = useRef<HTMLDivElement>(null);
+
+    // Анимационные значения
+    const rotateX = useSpring(0, springValues);
+    const rotateY = useSpring(0, springValues);
+    const scale = useSpring(1, springValues);
+    const labelFloat = useSpring(0, { stiffness: 200, damping: 10 });
+
+    const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!ref.current) return;
+
+        const rect = ref.current.getBoundingClientRect();
+        const offsetX = e.clientX - rect.left - rect.width / 2;
+        const offsetY = e.clientY - rect.top - rect.height / 2;
+
+        rotateX.set((offsetY / (rect.height / 2)) * -15);
+        rotateY.set((offsetX / (rect.width / 2)) * 15);
+        labelFloat.set(offsetY * 0.02);
+    };
+
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+        scale.set(1.08, {
+            type: "spring",
+            stiffness: 200,
+            damping: 15,
+            mass: 0.7
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        scale.set(1, {
+            type: "spring",
+            stiffness: 200,
+            damping: 15,
+            mass: 0.7
+        });
+        rotateX.set(0);
+        rotateY.set(0);
+        labelFloat.set(0);
+    };
+
+    return (
+        <div className="relative max-w-[300px]">
+            {/* Лейбл "Выбор гостей" с плавной анимацией */}
+            {isGuestFavorite && (
+                <motion.div
+                    className="absolute top-2 left-2 bg-white px-3 py-1 rounded-full shadow-lg z-30"
+                    style={{
+                        y: labelFloat,
+                        scale: isHovered ? 1.1 : 1
+                    }}
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 15,
+                        mass: 0.5,
+                        scale: {
+                            type: "spring",
+                            stiffness: 200,
+                            damping: 10,
+                            duration: 0.3
+                        }
+                    }}
+                >
+                    <span className="text-xs font-bold text-rose-600 whitespace-nowrap">
+                        Выбор гостей
+                    </span>
+                </motion.div>
+            )}
+
+            {/* Основная карточка с 3D-эффектами */}
+            <motion.div
+                ref={ref}
+                className="bg-white rounded-lg shadow-md overflow-hidden w-full relative [perspective:1000px]"
+                style={{ rotateX, rotateY, scale }}
+                onMouseMove={handleMouse}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
+                <motion.div className="relative [transform-style:preserve-3d] w-full h-full">
+                    {/* Изображение */}
+                    <div className="relative">
+                        <Image
+                            src={imageUrl}
+                            alt={`${title} image`}
+                            width={300}
+                            height={250}
+                            className="w-full h-[250px] object-cover rounded-t-lg"
+                            priority
+                        />
+
+                        {/* Кнопка избранного */}
+                        <motion.button
+                            className="absolute top-2 right-2 p-2 bg-white/80 rounded-full z-10 backdrop-blur-sm"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsFavorite((prev) => !prev);
+                            }}
+                            whileHover={{ scale: 1.2 }}
+                            whileTap={{ scale: 0.9 }}
+                        >
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                                    fill={isFavorite ? '#ff0000' : 'rgba(0,0,0,0.5)'}
+                                    stroke={isFavorite ? '#ff0000' : '#fff'}
+                                    strokeWidth="1.5"
+                                />
+                            </svg>
+                        </motion.button>
+                    </div>
+
+                    {/* Информация о карточке */}
+                    <div className="p-4">
+                        <div className="flex justify-between items-center mb-2">
+                            <h3 className="text-base text-black font-bold line-clamp-1">
+                                {title}, {location}
+                            </h3>
+                            <div className="flex items-center shrink-0">
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="#FFD700"
+                                    className="shrink-0"
+                                >
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                                </svg>
+                                <span className="text-sm text-black font-semibold ml-1">{rating}</span>
+                            </div>
+                        </div>
+
+                        <div className="text-gray-500 text-sm space-y-1">
+                            <p>{distance}</p>
+                            <p>{dates}</p>
+                        </div>
+
+                        <p className="text-lg text-black font-semibold mt-2">{price}</p>
+                    </div>
+                </motion.div>
+            </motion.div>
+        </div>
+    );
+};
+
+export default ListingCard;
