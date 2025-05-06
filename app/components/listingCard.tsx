@@ -3,6 +3,8 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
+import { useMediaQuery } from 'react-responsive';
 
 interface ListingCardProps {
     title: string;
@@ -10,7 +12,7 @@ interface ListingCardProps {
     distance: string;
     dates: string;
     price: string;
-    imageUrl: string;
+    imageUrls: string[];
     rating: number;
     isGuestFavorite?: boolean;
 }
@@ -27,13 +29,15 @@ const ListingCard: React.FC<ListingCardProps> = ({
                                                      distance,
                                                      dates,
                                                      price,
-                                                     imageUrl,
+                                                     imageUrls,
                                                      rating,
                                                      isGuestFavorite = true,
                                                  }) => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const ref = useRef<HTMLDivElement>(null);
+    const isMobile = useMediaQuery({ maxWidth: 768 });
 
     const rotateX = useSpring(0, springValues);
     const rotateY = useSpring(0, springValues);
@@ -75,6 +79,25 @@ const ListingCard: React.FC<ListingCardProps> = ({
         labelFloat.set(0);
     };
 
+    const nextImage = () => {
+        setCurrentImageIndex((prevIndex) =>
+            prevIndex === imageUrls.length - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex((prevIndex) =>
+            prevIndex === 0 ? imageUrls.length - 1 : prevIndex - 1
+        );
+    };
+
+    const swipeHandlers = useSwipeable({
+        onSwipedLeft: () => nextImage(),
+        onSwipedRight: () => prevImage(),
+        preventDefaultTouchmoveEvent: true,
+        trackMouse: true
+    });
+
     return (
         <div className="relative max-w-[300px]">
             {isGuestFavorite && (
@@ -114,19 +137,70 @@ const ListingCard: React.FC<ListingCardProps> = ({
                 onMouseLeave={handleMouseLeave}
             >
                 <motion.div className="relative [transform-style:preserve-3d] w-full h-full">
-
-                    <div className="relative">
+                    <div className="relative" {...(isMobile ? swipeHandlers : {})}>
                         <Image
-                            src={imageUrl}
-                            alt={`${title} image`}
+                            src={imageUrls[currentImageIndex]}
+                            alt={`${title} image ${currentImageIndex + 1}`}
                             width={300}
                             height={250}
                             className="w-full h-[250px] object-cover rounded-t-lg"
                             priority
                         />
 
+                        {isMobile && imageUrls.length > 1 && (
+                            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                                {imageUrls.map((_, index) => (
+                                    <div
+                                        key={index}
+                                        className={`h-1 rounded-full ${index === currentImageIndex ? 'bg-white w-3' : 'bg-white/50 w-1'}`}
+                                    />
+                                ))}
+                            </div>
+                        )}
+
+                        {!isMobile && imageUrls.length > 1 && (
+                            <>
+                                <button
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/30 rounded-full p-2 shadow-md z-10 hover:bg-white/80 border border-gray-400"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        prevImage();
+                                    }}
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="2"
+                                    >
+                                        <path d="M15 18l-6-6 6-6" />
+                                    </svg>
+                                </button>
+                                <button
+                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/30 rounded-full p-2 shadow-md z-10 hover:bg-white/80 border border-gray-400"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        nextImage();
+                                    }}
+                                >
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="black"
+                                        strokeWidth="2"
+                                    >
+                                        <path d="M9 18l6-6-6-6" />
+                                    </svg>
+                                </button>
+                            </>
+                        )}
+
                         <motion.button
-                            className="absolute top-2 right-2 p-2 bg-white/80 rounded-full z-10 backdrop-blur-sm"
+                            className="absolute top-2 right-2 p-2 z-10 backdrop-blur-sm"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setIsFavorite((prev) => !prev);
@@ -150,7 +224,6 @@ const ListingCard: React.FC<ListingCardProps> = ({
                         </motion.button>
                     </div>
 
-                    {/* Информация о карточке */}
                     <div className="p-4">
                         <div className="flex justify-between items-center mb-2">
                             <h3 className="text-base text-black font-bold line-clamp-1">

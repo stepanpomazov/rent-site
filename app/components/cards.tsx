@@ -1,5 +1,3 @@
-// components/ListingsPage.tsx
-
 import React from 'react';
 import ListingCard from '@/app/components/listingCard';
 
@@ -11,7 +9,7 @@ const ListingsPage = () => {
             distance: 'Расстояние: 61 километр',
             dates: '31 авг. – 5 сент.',
             price: '62 580 RUB за 5 ночей',
-            imageUrl: '/house.jpg',
+            imageUrls: ['/house.jpg', '/house2.png', '/house3.jpg'],
             rating: 4.97,
         },
         {
@@ -20,7 +18,7 @@ const ListingsPage = () => {
             distance: 'Расстояние: 61 километр',
             dates: '31 авг. – 5 сент.',
             price: '62 580 RUB за 5 ночей',
-            imageUrl: '/house.jpg',
+            imageUrls: ['/house.jpg', '/house2.png', '/house3.jpg'],
             rating: 4.97,
             isGuestFavorite: true
         },
@@ -30,7 +28,7 @@ const ListingsPage = () => {
             distance: 'Расстояние: 61 километр',
             dates: '31 авг. – 5 сент.',
             price: '62 580 RUB за 5 ночей',
-            imageUrl: '/house.jpg',
+            imageUrls: ['/house.jpg', '/house2.png', '/house3.jpg'],
             rating: 4.97,
         },
     ];

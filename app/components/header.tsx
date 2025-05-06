@@ -13,8 +13,7 @@ const Header = () => {
         { href: "/listings", text: "Listings" },
         { href: "/location", text: "Location" },
         { href: "/features", text: "Features" },
-        { href: "/features", text: "Features" },
-        { href: "/features", text: "Features" },
+
     ];
 
     useEffect(() => {
@@ -29,7 +28,7 @@ const Header = () => {
                 totalWidth += item.offsetWidth;
             }
 
-            const gapsWidth = (items.length - 1) * 20;
+            const gapsWidth = (items.length - 1) * 24;
             const padding = 100;
 
             const newWidth = totalWidth + gapsWidth + padding;
@@ -37,28 +36,16 @@ const Header = () => {
         };
 
         calculateWidth();
-
-        const mutationObserver = new MutationObserver(calculateWidth);
-        if (linksRef.current) {
-            mutationObserver.observe(linksRef.current, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                characterData: true
-            });
-        }
-
         const resizeObserver = new ResizeObserver(calculateWidth);
+
         if (linksRef.current) {
+            resizeObserver.observe(linksRef.current);
             Array.from(linksRef.current.children).forEach(child => {
                 resizeObserver.observe(child);
             });
         }
 
-        return () => {
-            mutationObserver.disconnect();
-            resizeObserver.disconnect();
-        };
+        return () => resizeObserver.disconnect();
     }, [menuItems]);
 
     return (
@@ -71,9 +58,9 @@ const Header = () => {
                 </div>
 
                 <nav className="relative flex-auto text-center -mt-6 min-w-0">
-                    <div className="inline-block relative" ref={navRef}>
+                    <div className="inline-block relative" ref={navRef} style={{ height: '53px' }}>
                         <svg
-                            className="h-auto mx-auto block"
+                            className="h-[53px] mx-auto block"
                             style={{
                                 width: `${navWidth}px`,
                                 maxWidth: '100%',
@@ -81,7 +68,7 @@ const Header = () => {
                             }}
                             viewBox="0 0 521 62"
                             xmlns="http://www.w3.org/2000/svg"
-                            preserveAspectRatio="xMidYMid meet"
+                            preserveAspectRatio="none"
                         >
                             <path d="m521 62h-521v-62h521zm-497.92-31.98c5.55 15.9 7.01 18.45 13.52 23.54 4.4 3.44 4.4 3.44 224.43 3.19 220.02-0.25 220.02-0.25 225.55-4.75 5.52-4.5 5.52-4.5 11.06-20.39 4.84-13.87 6.13-16.54 14.86-26.26l-504.87 0.15 5.2 5.02c4.86 4.71 5.52 5.96 10.25 19.5" fill="rgba(0,0,0,0)" />
                             <path d="m23.08 30.02c-4.73-13.54-5.39-14.79-10.25-19.5l-5.2-5.02 504.87-0.15c-8.73 9.72-10.02 12.39-14.86 26.26-5.54 15.89-5.54 15.89-11.06 20.39-5.53 4.5-5.53 4.5-225.55 4.75-220.03 0.25-220.03 0.25-224.43-3.19-6.51-5.09-7.97-7.64-13.52-23.54" fill="rgba(252,252,252,0.988235)" />
@@ -105,7 +92,7 @@ const Header = () => {
                     </div>
                 </nav>
 
-                <div className="flex-1flex justify-end items-center gap-2">
+                <div className="flex-1 flex justify-end items-center gap-2">
                     <button className="bg-black/50 border border-white text-white text-xs md:text-sm px-3 md:px-4 py-1 md:py-2 rounded-full h-[32px] md:h-[40px] w-[70px] md:w-[90px] whitespace-nowrap">
                         Sign Up
                     </button>
